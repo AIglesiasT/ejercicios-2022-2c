@@ -1,0 +1,21 @@
+Aporte de los mensajes de DD
+	
+	Cuando hablamos de los mensajes Dispatch nos referimos a la capacidad de que 2 objetos respondan el mismo mensaje(polimorfismo), en el cual el usuario del objeto puede abstraerse de la implementacion del mismo y usarlo como si se tratasen de el mismo mensaje. Por ejemplo en el caso de los numeros, los enteros y las fracciones cuentan con casi los mismos mensajes(que en este caso son los operadores) inclusive los objetos pueden interacturar entre ellos, sumando un entero con una fraccion o viceversa. Los mensajes privados o dd los guardamos en un sector aparte en el que el usuario en un principio tiene acceso pero estaría utilizando parte de la implementación, por eso en otros lenguajes de programación se puede dejar el código en privado o "protejido"
+
+Lógica de instanciado
+	
+	Para instanciar el objeto necesitamos un inicializador para cada objeto("initializeWith:" que lo que hace es guardar el valor de la instancia dentro de un colaborador llamado "value"), en el caso de los enteros toma un "Numero" como lo indíca su superclase. Pero en el caso de la fracción esta compuesta de 2 números "aNumerator" y "aDenominator"(que se inicializa con "initializeWith:" para la parte del numerador que se guarda dentro de "aNumerator" y "over:" para la parte de denominador que se guarda dentro de "aDenominator ambos son colaboradores). 
+	
+Nombres de las categorías de métodos
+	
+	Para seleccionar los nombres de las categorías de los métodos, aquellos que sean polimórficos llevan un nombre descriptivo ya que van a ser utilizado en varias partes y cumplen una función importante, los métodos estàn separados por una funcionalidad, que tienen que ver con el manejo que tiene el usuario con respecto a la manipulación del mismo, como por ejemplo para instanciarlo hay un aparatado de metodos de inicializacion, o para acceder a los colaboradores del mismo hay una parte de "accesing"... y así con sus distintas funcionalidades.
+	
+Subclass Responsibility
+	
+	El mensaje "self subclassResponsibility" es para indicar que el método tiene que ser respondido por la clase hija, cada clase tiene una distinta manera de responder el mismo, por eso la implementación esta dentro de cada subclase. El usuario de la clase madre se puede abstraer de la implementación de las clases hijas. 
+	
+No rompas
+
+	Romper encapsulamiento trae problemas de complejidad, la base de todo es que cada clase, objeto tenga un "rol" y lo cumpla, si se empieza a acceder de afuera del objeto(y se empiezan a dar funciones de una clase a otra clase) a los metodos o colaboradores, vamos a tener mas metodos inecesarios dentro de otros objetos cumpliendo funciones que no son necesarias o inclusive no tienen nada que ver. Otro problema que trae es que es mas facil que los colaboradores se cambien por accidente haciendo que el código se rompa. Muchas veces el objeto representa un ente de la realidad y cada uno está separado de otro por lo tanto que si los ojetos se empiezan a relacionar estrechamente entre si puede hacer que rompa nuestro modelo.  
+	El encapsulamiento se da para que cada clase cumpla con lo pedido con las minimas funciones necesarias, para así poder abstraerse de las funciones de cada clase y que cada interactuen entre ellas sin tener la necesidad de que compartan colaboradores  
+	
