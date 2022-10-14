@@ -1,6 +1,6 @@
 !classDefinition: #Stack category: 'StackPrimeraParte'!
 OrderedCollection subclass: #Stack
-	instanceVariableNames: 'last'
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'StackPrimeraParte'!
