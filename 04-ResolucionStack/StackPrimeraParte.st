@@ -5,32 +5,19 @@ OrderedCollection subclass: #Stack
 	poolDictionaries: ''
 	category: 'StackPrimeraParte'!
 
-!Stack methodsFor: 'as yet unclassified' stamp: 'AMIT 10/14/2022 11:43:36'!
-initilizeWith:anElementToStartWith
- last:=anElementToStartWith.
-! !
-
-!Stack methodsFor: 'as yet unclassified' stamp: 'AMIT 10/14/2022 12:09:22'!
-pop
-	^self removeFirst.! !
-
-!Stack methodsFor: 'as yet unclassified' stamp: 'AMIT 10/14/2022 11:41:41'!
-push: anElementToAdd
-	self addFirst:anElementToAdd.! !
-
-!Stack methodsFor: 'as yet unclassified' stamp: 'AMIT 10/14/2022 12:09:28'!
+!Stack methodsFor: 'accesing' stamp: 'AMIT 10/14/2022 12:09:28'!
 top
  ^self first.! !
 
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'Stack class' category: 'StackPrimeraParte'!
-Stack class
-	instanceVariableNames: ''!
+!Stack methodsFor: 'removing' stamp: 'AMIT 10/14/2022 12:09:22'!
+pop
+	^self removeFirst.! !
 
-!Stack class methodsFor: 'as yet unclassified' stamp: 'AMIT 10/14/2022 11:52:37'!
-with: aValue
- ^self new initializeWith: aValue! !
+
+!Stack methodsFor: 'adding' stamp: 'AMIT 10/14/2022 11:41:41'!
+push: anElementToAdd
+	self addFirst:anElementToAdd.! !
 
 
 !classDefinition: #StackTest category: 'StackPrimeraParte'!
