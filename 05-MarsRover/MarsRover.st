@@ -5,20 +5,20 @@ TestCase subclass: #TestMarsRoVerFunctions
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!TestMarsRoVerFunctions methodsFor: 'Tests' stamp: 'AMIT 11/4/2022 16:26:13'!
+!TestMarsRoVerFunctions methodsFor: 'Tests' stamp: 'AMIT 11/4/2022 16:50:47'!
 test01AnEmptyCommandProduecesNoMovementFromTheRover
 
-	self assertMarsRoverThatStartedFacing:#North withInitialPosition:0@0 respondsToCommands:'' andEndsfacing:#North andInPosition: 0@0.! !
+	self assertMarsRoverThatStartedFacingNorthInOriginRespondsToCommands:'' andEndsfacing:#North andInPosition: 0@0.! !
 
-!TestMarsRoVerFunctions methodsFor: 'Tests' stamp: 'AMIT 11/4/2022 16:26:13'!
+!TestMarsRoVerFunctions methodsFor: 'Tests' stamp: 'AMIT 11/4/2022 16:50:55'!
 test02TheRoverCanChangeDirections
 	
-	self assertMarsRoverThatStartedFacing:#North withInitialPosition: 0@0 respondsToCommands:'l' andEndsfacing:#West andInPosition: 0@0.! !
+	self assertMarsRoverThatStartedFacingNorthInOriginRespondsToCommands:'l' andEndsfacing:#West andInPosition: 0@0.! !
 
-!TestMarsRoVerFunctions methodsFor: 'Tests' stamp: 'AMIT 11/4/2022 16:28:19'!
+!TestMarsRoVerFunctions methodsFor: 'Tests' stamp: 'AMIT 11/4/2022 16:51:03'!
 test03TheRoverCanMove
 
-	self assertMarsRoverThatStartedFacing:#North withInitialPosition: 0@0 respondsToCommands:'f' andEndsfacing:#North andInPosition: 0@1.! !
+	self assertMarsRoverThatStartedFacingNorthInOriginRespondsToCommands:'f' andEndsfacing:#North andInPosition: 0@1.! !
 
 !TestMarsRoVerFunctions methodsFor: 'Tests' stamp: 'AMIT 11/4/2022 16:28:39'!
 test04TheRoverThrowsErrorAndDoesntMoveIfCommandIsNotUnderstoodWithoutAnyOtherCommands
@@ -32,10 +32,10 @@ test04TheRoverThrowsErrorAndDoesntMoveIfCommandIsNotUnderstoodWithoutAnyOtherCom
 			self assert: (aMarsRover isFacing:#North at: 0@0).
 		].! !
 
-!TestMarsRoVerFunctions methodsFor: 'Tests' stamp: 'AMIT 11/4/2022 16:31:40'!
+!TestMarsRoVerFunctions methodsFor: 'Tests' stamp: 'AMIT 11/4/2022 16:51:23'!
 test05TheRoverCanMoveAndChangeDirections
 	
-	self assertMarsRoverThatStartedFacing:#North withInitialPosition: 0@0 respondsToCommands:'rb' andEndsfacing:#East andInPosition: -1@0.! !
+	self assertMarsRoverThatStartedFacingNorthInOriginRespondsToCommands: 'rb' andEndsfacing:#East andInPosition: -1@0.! !
 
 !TestMarsRoVerFunctions methodsFor: 'Tests' stamp: 'AMIT 11/4/2022 16:37:06'!
 test06TheRoverFollowsCommandIsUntilItDosntUnderstandIt
@@ -55,12 +55,22 @@ test07TheRoverCanStartAtAnyPositionAndAnyOrientation
 	self assertMarsRoverThatStartedFacing:#South withInitialPosition: 0@1 respondsToCommands:'ffrrflfrb' andEndsfacing:#North andInPosition: -1@-1.! !
 
 
-!TestMarsRoVerFunctions methodsFor: 'assertions' stamp: 'AMIT 11/4/2022 16:27:23'!
+!TestMarsRoVerFunctions methodsFor: 'assertions' stamp: 'AMIT 11/4/2022 16:47:48'!
 assertMarsRoverThatStartedFacing: anInitialCardinalPoint  withInitialPosition: anInitialPosition respondsToCommands:aCommandSequence andEndsfacing:aFinalCardinalPoint andInPosition: aFinalPosition
 	
 	| aMarsRover |
 	aMarsRover _ MarsRover withInitialDirection: anInitialCardinalPoint andPosition: anInitialPosition .
+	
+	aMarsRover processCommands: aCommandSequence .
+	
+	self assert: (aMarsRover isFacing: aFinalCardinalPoint at: aFinalPosition).! !
 
+!TestMarsRoVerFunctions methodsFor: 'assertions' stamp: 'AMIT 11/4/2022 16:50:22'!
+assertMarsRoverThatStartedFacingNorthInOriginRespondsToCommands:aCommandSequence andEndsfacing:aFinalCardinalPoint andInPosition: aFinalPosition
+	
+	| aMarsRover |
+	aMarsRover _ MarsRover withInitialDirection: #North andPosition: 0@0 .
+	
 	aMarsRover processCommands: aCommandSequence .
 	
 	self assert: (aMarsRover isFacing: aFinalCardinalPoint at: aFinalPosition).! !
@@ -73,7 +83,7 @@ Object subclass: #MarsRover
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRover methodsFor: 'ttt' stamp: 'AMIT 11/4/2022 14:35:34'!
+!MarsRover methodsFor: 'public-commands' stamp: 'AMIT 11/4/2022 14:35:34'!
 processCommands: aCommandSequence
 	(aCommandSequence isEmpty) ifTrue: [^self].
 	aCommandSequence do:[:aCommandKey|
@@ -83,6 +93,11 @@ processCommands: aCommandSequence
 	! !
 
 
+!MarsRover methodsFor: 'private-commands' stamp: 'AMIT 11/4/2022 13:52:51'!
+isValidCommand:aCommandKey
+ ^(aCommandKey=$f or:aCommandKey=$b or:aCommandKey=$l or: aCommandKey=$r).! !
+
+
 !MarsRover methodsFor: 'testing-position' stamp: 'AMIT 11/4/2022 16:23:12'!
 isFacing: aCardinalPoint at: aPoint
 
@@ -90,68 +105,65 @@ isFacing: aCardinalPoint at: aPoint
 	! !
 
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:11:36'!
-faceEast
-	direction _ MarsRoverFacingEast of:self.! !
-
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:10:01'!
-faceNorth
-	direction _ MarsRoverFacingNorth of:self.! !
-
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:11:26'!
-faceSouth
-	direction _ MarsRoverFacingSouth of:self.! !
-
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:11:47'!
-faceWest
-	direction _ MarsRoverFacingWest of:self.! !
-
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 16:04:47'!
+!MarsRover methodsFor: 'initialize' stamp: 'AMIT 11/4/2022 16:04:47'!
 initializationWithStatringDirection:anInitialCardinalPoint andPosition: anInitialPosition.
 	position _ anInitialPosition.
 	direction _ MarsRoverDirection of: self facing: anInitialCardinalPoint! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 13:52:51'!
-isValidCommand:aCommandKey
- ^(aCommandKey=$f or:aCommandKey=$b or:aCommandKey=$l or: aCommandKey=$r).! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:46:10'!
+!MarsRover methodsFor: 'movement' stamp: 'AMIT 11/4/2022 15:11:36'!
+faceEast
+	direction _ MarsRoverFacingEast of:self.! !
+
+!MarsRover methodsFor: 'movement' stamp: 'AMIT 11/4/2022 15:10:01'!
+faceNorth
+	direction _ MarsRoverFacingNorth of:self.! !
+
+!MarsRover methodsFor: 'movement' stamp: 'AMIT 11/4/2022 15:11:26'!
+faceSouth
+	direction _ MarsRoverFacingSouth of:self.! !
+
+!MarsRover methodsFor: 'movement' stamp: 'AMIT 11/4/2022 15:11:47'!
+faceWest
+	direction _ MarsRoverFacingWest of:self.! !
+
+!MarsRover methodsFor: 'movement' stamp: 'AMIT 11/4/2022 15:46:10'!
 move:aCommandKey
 	(aCommandKey=$f)ifTrue:[self moveFowards].
 	(aCommandKey=$b)ifTrue:[self moveBackwards].
 	(aCommandKey=$l)ifTrue:[self rotateLeft].
 	(aCommandKey=$r)ifTrue:[self rotateRight].! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 16:12:04'!
+!MarsRover methodsFor: 'movement' stamp: 'AMIT 11/4/2022 16:12:04'!
 moveBackwards
  position _ position + (direction moveBackwards).! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 16:12:18'!
+!MarsRover methodsFor: 'movement' stamp: 'AMIT 11/4/2022 16:12:18'!
 moveFowards
 	
 	position _ direction moveFowards + position .! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:05:27'!
+!MarsRover methodsFor: 'movement' stamp: 'AMIT 11/4/2022 15:05:27'!
 moveXNegative
 	^(-1@0)! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:05:31'!
+!MarsRover methodsFor: 'movement' stamp: 'AMIT 11/4/2022 15:05:31'!
 moveXPositive
 	^(1@0)! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:05:36'!
+!MarsRover methodsFor: 'movement' stamp: 'AMIT 11/4/2022 15:05:36'!
 moveYNegative
 	^(0@-1)! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:05:39'!
+!MarsRover methodsFor: 'movement' stamp: 'AMIT 11/4/2022 15:05:39'!
 moveYPositive
 	^(0@1)! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 16:10:23'!
+!MarsRover methodsFor: 'movement' stamp: 'AMIT 11/4/2022 16:10:23'!
 rotateLeft
   direction rotateAntiClockWise.! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 16:11:14'!
+!MarsRover methodsFor: 'movement' stamp: 'AMIT 11/4/2022 16:11:14'!
 rotateRight
 
 	direction rotateClockWise.! !
@@ -162,11 +174,12 @@ rotateRight
 MarsRover class
 	instanceVariableNames: ''!
 
-!MarsRover class methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 13:43:03'!
+!MarsRover class methodsFor: 'errors' stamp: 'AMIT 11/4/2022 13:43:03'!
 invalidCommandErrorMessage
  ^'Command Not Understood'! !
 
-!MarsRover class methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 16:02:37'!
+
+!MarsRover class methodsFor: 'initialize' stamp: 'AMIT 11/4/2022 16:02:37'!
 withInitialDirection: anInitialCardinalPoint andPosition: anInitialPosition
 ^self new initializationWithStatringDirection:anInitialCardinalPoint andPosition: anInitialPosition.! !
 
@@ -178,31 +191,33 @@ Object subclass: #MarsRoverDirection
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRoverDirection methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:10:53'!
+!MarsRoverDirection methodsFor: 'initialize' stamp: 'AMIT 11/4/2022 15:10:53'!
 initializationOfDirectionOf:aMarsRover
 	marsRover:=aMarsRover.! !
 
-!MarsRoverDirection methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:56:38'!
+
+!MarsRoverDirection methodsFor: 'comparison' stamp: 'AMIT 11/4/2022 15:56:38'!
 isCardinalPoint: aCardinalPointToCompare
 
 	^self class isFacing: aCardinalPointToCompare.! !
 
-!MarsRoverDirection methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 16:12:04'!
+
+!MarsRoverDirection methodsFor: 'movement' stamp: 'AMIT 11/4/2022 16:12:04'!
 moveBackwards
 	
 	self subclassResponsibility .! !
 
-!MarsRoverDirection methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 16:12:18'!
+!MarsRoverDirection methodsFor: 'movement' stamp: 'AMIT 11/4/2022 16:12:18'!
 moveFowards
 	
 	self subclassResponsibility .! !
 
-!MarsRoverDirection methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:45:01'!
+!MarsRoverDirection methodsFor: 'movement' stamp: 'AMIT 11/4/2022 15:45:01'!
 rotateAntiClockWise
 
 	self subclassResponsibility .! !
 
-!MarsRoverDirection methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:45:15'!
+!MarsRoverDirection methodsFor: 'movement' stamp: 'AMIT 11/4/2022 15:45:15'!
 rotateClockWise
 
 	self subclassResponsibility .! !
@@ -213,17 +228,18 @@ rotateClockWise
 MarsRoverDirection class
 	instanceVariableNames: ''!
 
-!MarsRoverDirection class methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:51:11'!
+!MarsRoverDirection class methodsFor: 'comparisons' stamp: 'AMIT 11/4/2022 15:51:11'!
 isFacing: aCardinalPointToCompare
 
 	self subclassResponsibility .! !
 
-!MarsRoverDirection class methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:10:53'!
+
+!MarsRoverDirection class methodsFor: 'initialize' stamp: 'AMIT 11/4/2022 15:10:53'!
 of:aMarsRover 
 
 	^self new initializationOfDirectionOf:aMarsRover! !
 
-!MarsRoverDirection class methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:51:11'!
+!MarsRoverDirection class methodsFor: 'initialize' stamp: 'AMIT 11/4/2022 15:51:11'!
 of:aMarsRover facing:aDirection
  
 	|aSubclassType|
@@ -239,22 +255,22 @@ MarsRoverDirection subclass: #MarsRoverFacingEast
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRoverFacingEast methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 16:12:04'!
+!MarsRoverFacingEast methodsFor: 'movement' stamp: 'AMIT 11/4/2022 16:12:04'!
 moveBackwards
 	
 	^marsRover moveXNegative.! !
 
-!MarsRoverFacingEast methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 16:12:18'!
+!MarsRoverFacingEast methodsFor: 'movement' stamp: 'AMIT 11/4/2022 16:12:18'!
 moveFowards
 	
 	^marsRover moveXPositive .! !
 
-!MarsRoverFacingEast methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 16:10:02'!
+!MarsRoverFacingEast methodsFor: 'movement' stamp: 'AMIT 11/4/2022 16:10:02'!
 rotateAntiClockWise
 	
 	^(marsRover faceNorth).! !
 
-!MarsRoverFacingEast methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:45:15'!
+!MarsRoverFacingEast methodsFor: 'movement' stamp: 'AMIT 11/4/2022 15:45:15'!
 rotateClockWise
 	
 	^marsRover faceSouth! !
@@ -265,7 +281,7 @@ rotateClockWise
 MarsRoverFacingEast class
 	instanceVariableNames: ''!
 
-!MarsRoverFacingEast class methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:52:05'!
+!MarsRoverFacingEast class methodsFor: 'comparisons' stamp: 'AMIT 11/4/2022 15:52:05'!
 isFacing: aCardinalPointToCompare
 
 	^aCardinalPointToCompare=#East! !
@@ -278,22 +294,22 @@ MarsRoverDirection subclass: #MarsRoverFacingNorth
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRoverFacingNorth methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 16:12:04'!
+!MarsRoverFacingNorth methodsFor: 'movement' stamp: 'AMIT 11/4/2022 16:12:04'!
 moveBackwards
 
 	^marsRover moveYNegative! !
 
-!MarsRoverFacingNorth methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 16:12:18'!
+!MarsRoverFacingNorth methodsFor: 'movement' stamp: 'AMIT 11/4/2022 16:12:18'!
 moveFowards
 
 	^marsRover moveYPositive .! !
 
-!MarsRoverFacingNorth methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:45:01'!
+!MarsRoverFacingNorth methodsFor: 'movement' stamp: 'AMIT 11/4/2022 15:45:01'!
 rotateAntiClockWise
 	
 	^marsRover faceWest! !
 
-!MarsRoverFacingNorth methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:45:15'!
+!MarsRoverFacingNorth methodsFor: 'movement' stamp: 'AMIT 11/4/2022 15:45:15'!
 rotateClockWise
 	
 	^marsRover faceEast! !
@@ -304,7 +320,7 @@ rotateClockWise
 MarsRoverFacingNorth class
 	instanceVariableNames: ''!
 
-!MarsRoverFacingNorth class methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:52:25'!
+!MarsRoverFacingNorth class methodsFor: 'comparisons' stamp: 'AMIT 11/4/2022 15:52:25'!
 isFacing: aCardinalPointToCompare
 
 	^aCardinalPointToCompare=#North! !
@@ -317,22 +333,22 @@ MarsRoverDirection subclass: #MarsRoverFacingSouth
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRoverFacingSouth methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 16:12:04'!
+!MarsRoverFacingSouth methodsFor: 'movement' stamp: 'AMIT 11/4/2022 16:12:04'!
 moveBackwards
 	
 	^marsRover moveYPositive ! !
 
-!MarsRoverFacingSouth methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 16:12:18'!
+!MarsRoverFacingSouth methodsFor: 'movement' stamp: 'AMIT 11/4/2022 16:12:18'!
 moveFowards
 	
 	^marsRover moveYNegative.! !
 
-!MarsRoverFacingSouth methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:45:01'!
+!MarsRoverFacingSouth methodsFor: 'movement' stamp: 'AMIT 11/4/2022 15:45:01'!
 rotateAntiClockWise
 	
 	^marsRover faceEast! !
 
-!MarsRoverFacingSouth methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:45:15'!
+!MarsRoverFacingSouth methodsFor: 'movement' stamp: 'AMIT 11/4/2022 15:45:15'!
 rotateClockWise
 	
 	^marsRover faceWest! !
@@ -343,7 +359,7 @@ rotateClockWise
 MarsRoverFacingSouth class
 	instanceVariableNames: ''!
 
-!MarsRoverFacingSouth class methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:52:25'!
+!MarsRoverFacingSouth class methodsFor: 'comparisons' stamp: 'AMIT 11/4/2022 15:52:25'!
 isFacing: aCardinalPointToCompare
 
 	^aCardinalPointToCompare=#South! !
@@ -356,22 +372,22 @@ MarsRoverDirection subclass: #MarsRoverFacingWest
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRoverFacingWest methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 16:12:04'!
+!MarsRoverFacingWest methodsFor: 'movement' stamp: 'AMIT 11/4/2022 16:12:04'!
 moveBackwards
 	
 	^marsRover moveXPositive.! !
 
-!MarsRoverFacingWest methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 16:12:18'!
+!MarsRoverFacingWest methodsFor: 'movement' stamp: 'AMIT 11/4/2022 16:12:18'!
 moveFowards
 	
 	^marsRover moveXNegative .! !
 
-!MarsRoverFacingWest methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:45:01'!
+!MarsRoverFacingWest methodsFor: 'movement' stamp: 'AMIT 11/4/2022 15:45:01'!
 rotateAntiClockWise
 	
 	^marsRover faceSouth! !
 
-!MarsRoverFacingWest methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:45:15'!
+!MarsRoverFacingWest methodsFor: 'movement' stamp: 'AMIT 11/4/2022 15:45:15'!
 rotateClockWise
 	
 	^marsRover faceNorth! !
@@ -382,7 +398,7 @@ rotateClockWise
 MarsRoverFacingWest class
 	instanceVariableNames: ''!
 
-!MarsRoverFacingWest class methodsFor: 'as yet unclassified' stamp: 'AMIT 11/4/2022 15:52:25'!
+!MarsRoverFacingWest class methodsFor: 'comparisons' stamp: 'AMIT 11/4/2022 15:52:25'!
 isFacing: aCardinalPointToCompare
 
 	^aCardinalPointToCompare=#West! !
